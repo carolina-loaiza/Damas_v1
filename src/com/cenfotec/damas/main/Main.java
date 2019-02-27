@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -37,7 +38,7 @@ public class Main {
         initGame();
         panel.setLayout(new GridLayout(10,10));
         window.add(panel);
-        window.setSize(820, 800);
+        window.setSize(720, 700);
         window.setVisible(true);
     }
     
@@ -47,8 +48,7 @@ public class Main {
     		String[] Col  = new String[10];
 	    	for (int i = 0; i <= 9; i++) {
 	    		JButton CellButton = new JButton();
-	    		Col[i] = e + ColNames[i];
-	    		String id = Col[i];
+	    		String id = e + ColNames[i];
 	    		if ((countCell % 2 != 0) && (e < 4)) {
 	    			id = id + "-Jugador01";
 	    			CellButton.setIcon(new ImageIcon(new URL(fichaBlanco)));
@@ -61,13 +61,14 @@ public class Main {
 	    		CellButton.setOpaque(true);
 	    		CellButton.setBorder(new LineBorder(Color.BLACK));
 	    		CellButton.setBackground(Color.WHITE);
+	    		CellButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 	    		if (countCell % 2 == 0) {
 	    			id = id + "-Negro";
 	    			CellButton.setBackground(Color.LIGHT_GRAY);
 	    		} else {
 	    			id = id + "-Blanco"; 
 	    		}
-	    		CellButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	    		Col[i] = id;
 	    		CellButton.setActionCommand(id);
 	    		CellButton.addActionListener(new ActionListener() {
 	    			@Override
@@ -97,7 +98,8 @@ public class Main {
     	}
     	
     	if ((ficha != "" && movimiento != "") && (ficha != movimiento)) {
-    		checkMovimiento();
+    		//checkMovimiento();
+    		getCell();
     		fichaJugador = "";
     		ficha = "";
     		movimiento = "";
@@ -109,6 +111,7 @@ public class Main {
         for (int i = 0;i<comp.length;i++) {
             if (comp[i] instanceof JButton) {
             	String action = ((JButton)comp[i]).getActionCommand();
+            	
             	if (movimiento != "" && action == movimiento && fichaJugador != "") {
             		((JButton)comp[i]).setIcon(new ImageIcon(new URL(fichaJugador)));
             		((JButton)comp[i]).setActionCommand(action+jugador);
@@ -120,6 +123,25 @@ public class Main {
             	}
             }
         }
+	}
+    
+    
+    public static void getCell() throws MalformedURLException {
+    	for (int i = 0; i < Row.size(); i++) {
+    		String[] stringCell = Row.get(i);
+			
+    		for (int j = 0; j < stringCell.length; j++) {
+				String prevCell = stringCell[j];
+				if (prevCell == movimiento) {
+					Row.get(i)[j] = movimiento+jugador;
+				}
+				
+				if (prevCell == ficha) {
+					Row.get(i)[j] = ficha.replace(jugador, "");
+				}
+			}
+		}
+    	checkMovimiento();
 	}
     
 }
